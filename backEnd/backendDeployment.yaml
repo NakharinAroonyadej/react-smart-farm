@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: react-smart-farm-controller
+  labels:
+    app: react-smart-farm-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-smart-farm-controller
+    
+  template:
+    metadata:
+      labels:
+        app: react-smart-farm-controller
+    spec:
+      containers:
+      - image: react-smart-farm-controller:v1
+        name: react-smart-farm-controller
+        ports:
+        - containerPort: 5000
+          name: http-server
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  react-smart-farm-controller-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
+  selector:
+    app: react-smart-farm-controller
