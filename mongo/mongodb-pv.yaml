@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-iot
+spec:
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1 #ระบุว่า API Version อะไร
+kind: PersistentVolume #ระบุว่าเป็น Object ประเภทอะไร ในที่นี้คือ PV
+metadata:
+  name: pv-iot #ระบุชื่อของ PV
+spec: #ส่วนนี้จะเป็นการระบุสเปคของ Volume
+  capacity: 
+    storage: 1Gi #ระบุพื้นที่ของ Volume นี้
+  accessModes:
+    - ReadWriteOnce #ระบุว่า Volume นี้มีสิทธิในการเข้าถึงอย่างไร กรณีนี้คือเราจะไม่แชร์กับ Pod อื่น
+  hostPath: #ระบุ Type ของ Storage ของเราให้ใช้ Storage ของ Host หรือ Node นั่นเอง
+    path: "/mnt/mypv" #ระบุ Path ของ Host 

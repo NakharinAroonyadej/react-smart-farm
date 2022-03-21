@@ -10,7 +10,7 @@ app.use(bodyParser.json())
 
 console.log("urlDB :: ", urlDB);
 
-mongoose.connect(`mongodb://username:password@${urlDB}`, { useNewUrlParser: true } as mongoose.ConnectOptions);
+mongoose.connect(`mongodb://username:password@${urlDB}`, { useNewUrlParser: true } as mongoose.ConnectOptions).catch(err => console.log(err.reason));
 const conn = mongoose.connection;
 conn.on("connected", function () {
   console.log("[database] database connect on port 27017");
@@ -20,6 +20,7 @@ conn.on("disconnected", function () {
 });
 
 app.get("/", (_, res) => res.send("Hello Express Node.js"));
+app.get("/Hello", (_, res) => res.send("Hello Express Node.js"));
 app.get("/all", (_, res) => {
   nodeModel.find({}, function (err: any, user: any) {
     if (err) return res.send(err);
