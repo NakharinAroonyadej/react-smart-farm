@@ -7,6 +7,7 @@ import LightControlCard from "./Components/Card/LightControlCard"
 import ResultChart from "./Components/Chart/ResultChart"
 import { useEffect, useState } from "react"
 import Navigation from "./Components/Navigation/Navigation"
+import { purple, blue } from "@ant-design/colors"
 
 const { Content, Sider } = Layout
 
@@ -66,7 +67,7 @@ function App() {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Layout style={{ padding: "0 24px 24px" }}>
+        <Layout style={{ padding: "0 24px 24px", backgroundColor: blue[1] }}>
           <Breadcrumb style={{ margin: "16px 0" }}>
             <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>List</Breadcrumb.Item>

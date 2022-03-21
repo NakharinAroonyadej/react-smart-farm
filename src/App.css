@@ -23,3 +23,10 @@
 .gutter-row {
   padding: 16px 0;
 }
+.ant-menu-item-selected {
+  background-color: #ddd6fe !important;
+  color: #8b5cf6 !important;
+}
+.ant-menu-item:hover {
+  color: #8b5cf6 !important;
+}
