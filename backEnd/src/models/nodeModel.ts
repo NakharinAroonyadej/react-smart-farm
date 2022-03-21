@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 // create an schema
 var nodeSchema = new mongoose.Schema({
-  timestamp: Date,
+  timestamp: Number,
   temp: Number,
   airHumid: Number,
   earthHumid: Number,
