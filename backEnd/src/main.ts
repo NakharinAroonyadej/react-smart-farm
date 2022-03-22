@@ -20,7 +20,6 @@ conn.on("disconnected", function () {
 });
 
 app.get("/", (_, res) => res.send("Hello Express Node.js"));
-app.get("/Hello", (_, res) => res.send("Hello Express Node.js"));
 app.get("/all", (_, res) => {
   nodeModel.find({}, function (err: any, user: any) {
     if (err) return res.send(err);
