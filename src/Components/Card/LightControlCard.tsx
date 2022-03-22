@@ -9,6 +9,7 @@ import {
   themeState,
 } from "../States/Colors"
 import { SettingOutlined } from "@ant-design/icons"
+import styled from "@emotion/styled"
 
 type LightControlCardProps = {
   active: boolean
@@ -64,7 +65,7 @@ function LightControlCard({ active, title, width }: LightControlCardProps) {
           justifyContent: width <= 768 ? "space-between" : "center",
           alignItems: "center",
           height: 100,
-          padding: "0 1rem",
+          padding: "0 .5rem",
         }}
       >
         <h1

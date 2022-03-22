@@ -26,49 +26,19 @@ ChartJS.register(
   Legend
 )
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-      labels: {
-        font: {
-          size: 16,
-          color: "white",
-        },
-      },
-    },
-    title: {
-      display: true,
-      text: "กราฟอุณหภูมิ",
-      font: {
-        size: 20,
-      },
-    },
-    tooltip: {
-      callbacks: {
-        label: (item: any) => {
-          if (item.dataset.label === "อุณหภูมิ") return `${item.raw} °C`
-          else return `${item.raw} %`
-        },
-      },
-    },
-  },
-}
-
 const labels = [
-  "มกราคม",
-  "กุมภาพันธ์",
-  "มีนาคม",
-  "เมษายน",
-  "พฤษภาคม",
-  "มิถุนายน",
-  "กรกฎาคม",
-  "สิงหาคม",
-  "ตุลาคม",
-  "กันยายน",
-  "พฤศจิกายน",
-  "ธันวาคม",
+  "ม.ก.",
+  "ก.พ.",
+  "มี.ค.",
+  "เม.ษ.",
+  "พ.ค.",
+  "มิ.ย.",
+  "ก.ค.",
+  "ส.ค.",
+  "ต.ค.",
+  "ก.ย.",
+  "พ.ย.",
+  "ธ.ค.",
 ]
 
 export const data = {
@@ -87,6 +57,57 @@ function TempChart() {
   const theme = useRecoilValue(themeState)
   const darkSecondary = useRecoilValue(darkThemeSecondaryState)
   const lightSecondary = useRecoilValue(lightThemeSecondaryState)
+
+  const options = {
+    responsive: true,
+    layout: {
+      padding: 24,
+    },
+    scales: {
+      y: {
+        ticks: {
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Lato",
+          },
+        },
+      },
+      x: {
+        ticks: {
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Kanit",
+          },
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top" as const,
+        labels: {
+          font: {
+            size: 16,
+            family: "Kanit",
+          },
+          padding: 10,
+          color: theme === "dark" ? "white" : "black",
+        },
+        margin: 8,
+      },
+      title: {
+        display: true,
+        text: "กราฟอุณหภูมิ",
+        font: {
+          size: 24,
+          family: "Kanit",
+        },
+        color: theme === "dark" ? "white" : "black",
+      },
+    },
+  }
+
   return (
     <div
       style={{

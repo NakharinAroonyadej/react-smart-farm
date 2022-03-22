@@ -14,6 +14,7 @@ const FieldTitle = styled.p`
 `
 
 const FieldValue = styled.p`
+  font-family: Lato !important;
   font-size: 2.5rem;
   margin: 0;
   font-weight: bold;

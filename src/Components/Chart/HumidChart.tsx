@@ -26,48 +26,19 @@ ChartJS.register(
   Legend
 )
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-      labels: {
-        font: {
-          size: 16,
-        },
-      },
-    },
-    title: {
-      display: true,
-      text: "กราฟความชื้น",
-      font: {
-        size: 20,
-      },
-    },
-    tooltip: {
-      callbacks: {
-        label: (item: any) => {
-          if (item.dataset.label === "อุณหภูมิ") return `${item.raw} °C`
-          else return `${item.raw} %`
-        },
-      },
-    },
-  },
-}
-
 const labels = [
-  "มกราคม",
-  "กุมภาพันธ์",
-  "มีนาคม",
-  "เมษายน",
-  "พฤษภาคม",
-  "มิถุนายน",
-  "กรกฎาคม",
-  "สิงหาคม",
-  "ตุลาคม",
-  "กันยายน",
-  "พฤศจิกายน",
-  "ธันวาคม",
+  "ม.ก.",
+  "ก.พ.",
+  "มี.ค.",
+  "เม.ษ.",
+  "พ.ค.",
+  "มิ.ย.",
+  "ก.ค.",
+  "ส.ค.",
+  "ต.ค.",
+  "ก.ย.",
+  "พ.ย.",
+  "ธ.ค.",
 ]
 
 export const data = {
@@ -92,6 +63,62 @@ function HumidChart() {
   const theme = useRecoilValue(themeState)
   const darkSecondary = useRecoilValue(darkThemeSecondaryState)
   const lightSecondary = useRecoilValue(lightThemeSecondaryState)
+
+  const options = {
+    responsive: true,
+    layout: {
+      padding: 24,
+    },
+    scales: {
+      y: {
+        ticks: {
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Lato",
+          },
+        },
+      },
+      x: {
+        ticks: {
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Kanit",
+          },
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top" as const,
+        labels: {
+          font: {
+            size: 16,
+            family: "Lato",
+          },
+          color: theme === "dark" ? "white" : "black",
+        },
+      },
+      title: {
+        display: true,
+        text: "กราฟความชื้น",
+        font: {
+          size: 24,
+          family: "Kanit",
+        },
+        color: theme === "dark" ? "white" : "black",
+      },
+      tooltip: {
+        callbacks: {
+          label: (item: any) => {
+            return `${item.raw} °C`
+          },
+        },
+      },
+    },
+  }
+
   return (
     <div
       style={{

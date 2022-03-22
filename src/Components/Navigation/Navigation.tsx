@@ -1,14 +1,77 @@
-import { Avatar, Switch, Typography } from "antd"
+import { Avatar, Dropdown, Menu, Switch, Typography } from "antd"
 import { Header } from "antd/lib/layout/layout"
 import { gold, blue } from "@ant-design/colors"
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs"
+import styled from "@emotion/styled"
+import { FaSignOutAlt } from "react-icons/fa"
+import { useState } from "react"
+import { MdAgriculture } from "react-icons/md"
 
 const { Title } = Typography
 
-const lightPrimary = "#f1f5f9"
 const lightSecondary = "white"
 const darkPrimary = "#141418"
 const darkSecondary = "#23232e"
+
+const { Item } = Menu
+
+const StyledMenu = styled(Menu)`
+  background-color: ${darkSecondary};
+  width: 12rem;
+`
+
+const StyledMenuItem = styled(Item)`
+  height: 3rem;
+  &:hover {
+    background-color: ${darkPrimary};
+  }
+`
+
+const StyledLink = styled.a`
+  color: white !important;
+  font-size: 1rem;
+`
+
+const StyledLogOut = styled.a`
+  color: red !important;
+  font-size: 1rem;
+`
+
+const FlexContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const StyledAgricultureIcon = styled(MdAgriculture)`
+  font-size: 2rem;
+  margin-right: 0.5rem;
+  color: ${blue[5]};
+`
+
+const StyledAppTitle = styled.h1`
+  font-weight: normal;
+  font-size: 2rem;
+  margin: 0;
+  color: ${blue[5]};
+  font-family: Lato;
+`
+
+const menu = (
+  <StyledMenu style={{ backgroundColor: darkSecondary }}>
+    <StyledMenuItem>
+      <StyledLink>1st menu item</StyledLink>
+    </StyledMenuItem>
+    <StyledMenuItem>
+      <StyledLink>2nd menu item</StyledLink>
+    </StyledMenuItem>
+    <StyledMenuItem
+      icon={<FaSignOutAlt style={{ color: "red", fontSize: "1.25rem" }} />}
+    >
+      <StyledLogOut>ออกจากระบบ</StyledLogOut>
+    </StyledMenuItem>
+  </StyledMenu>
+)
 
 type NavigationProps = {
   darkTheme: boolean
@@ -16,8 +79,18 @@ type NavigationProps = {
 }
 
 function Navigation({ darkTheme, setDarkTheme }: NavigationProps) {
+  const [loading, setLoading] = useState<boolean>(false)
+
   const onChange = () => {
-    setDarkTheme(!darkTheme)
+    setLoading(true)
+    setTimeout(() => {
+      setDarkTheme(!darkTheme)
+      localStorage.setItem(
+        "react-smart-farm-theme",
+        !darkTheme ? "dark" : "light"
+      )
+      setLoading(false)
+    }, 100)
   }
 
   return (
@@ -36,21 +109,18 @@ function Navigation({ darkTheme, setDarkTheme }: NavigationProps) {
         boxShadow: darkTheme ? "" : "rgba(0, 0, 0, 0.16) 0px 1px 4px",
       }}
     >
-      <Title
-        level={3}
-        style={{ margin: 0, color: darkTheme ? "white" : "black" }}
-      >
-        React Smart Farm
-      </Title>
+      <FlexContainer>
+        <StyledAgricultureIcon />
+        <StyledAppTitle>React Smart Farm</StyledAppTitle>
+      </FlexContainer>
       <div className="avatar-container">
         <Switch
           defaultChecked={false}
           checked={darkTheme}
           checkedChildren={<BsMoonStarsFill style={{ marginTop: ".3rem" }} />}
           unCheckedChildren={<BsSunFill style={{ marginTop: ".3rem" }} />}
-          // checkedChildren={}
           onChange={onChange}
-          // loading={loading}
+          loading={loading}
           style={{
             // backgroundColor: isActive ? gold[5] : "",
             transform: "scale(1.5)",
@@ -58,14 +128,20 @@ function Navigation({ darkTheme, setDarkTheme }: NavigationProps) {
             backgroundColor: darkTheme ? blue[5] : gold[5],
           }}
         />
-        <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-          <Avatar
-            size={{ xs: 24, sm: 28, md: 32, lg: 36, xl: 40, xxl: 48 }}
-            src={
-              "https://cdn.discordapp.com/attachments/933038909984739338/953226625980457030/unknown.png"
-            }
-          />
-        </a>
+        <Dropdown
+          overlay={menu}
+          placement="bottomRight"
+          arrow={{ pointAtCenter: true }}
+        >
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            <Avatar
+              size={{ xs: 24, sm: 28, md: 32, lg: 36, xl: 40, xxl: 48 }}
+              src={
+                "https://cdn.discordapp.com/attachments/933038909984739338/953226625980457030/unknown.png"
+              }
+            />
+          </a>
+        </Dropdown>
       </div>
     </Header>
   )
