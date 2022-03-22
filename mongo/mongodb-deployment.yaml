@@ -30,19 +30,20 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: mongo-root-password 
-      #   volumeMounts:
-      #         - mountPath: /data/db
-      #           name: mongodb-volume
-      # volumes:
-      #   - name: mongodb-volume
-      #     persistentVolumeClaim: 
-      #       claimName: pvc-iot #อ้างอิง PVC ที่เราได้สร้างเอาไว้ เพื่อเรียกใช้ PV อีกทีหนึง
+        volumeMounts:
+              - mountPath: /data/db
+                name: mongodb-volume
+      volumes:
+        - name: mongodb-volume
+          persistentVolumeClaim: 
+            claimName: pvc-iot #อ้างอิง PVC ที่เราได้สร้างเอาไว้ เพื่อเรียกใช้ PV อีกทีหนึง
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mongodb-service
 spec:
+  # type: LoadBalancer
   selector:
     app: mongodb
   ports:

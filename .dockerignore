@@ -1,6 +1,7 @@
 node_modules
 npm-debug.log
 build
+./backEnd
 .dockerignore
 **/.git
 **/.DS_Store

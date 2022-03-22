@@ -25,7 +25,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name:  react-smart-farm-controller-service
+  name:  react-smart-farm-controller
 spec:
   type: LoadBalancer
   ports:

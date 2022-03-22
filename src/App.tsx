@@ -43,7 +43,14 @@ function App() {
     setTemp(mockupFields.temp)
     setAirHumid(mockupFields.airHumid)
     setSoilHumid(mockupFields.soilHumid)
+    all();
   }, [])
+
+  const all = async () => {
+    // const data = await fetch("http://react-smart-farm-controller.default.svr.cluster.local:5000/").then(data => data.json())
+    const data = await fetch("http://localhost:5000/").then(data => data.text())
+    console.log(data);
+  }
 
   return (
     <Layout>

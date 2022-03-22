@@ -2,11 +2,13 @@ import express from "express";
 import mongoose from "mongoose";
 import { nodeModel } from "./models/nodeModel";
 import bodyParser from "body-parser";
+var cors = require('cors');
 
 const app = express();
 const port = 5000;
 const urlDB = "mongodb-service.default.svc.cluster.local:27017";
 app.use(bodyParser.json())
+app.use(cors());
 
 console.log("urlDB :: ", urlDB);
 
