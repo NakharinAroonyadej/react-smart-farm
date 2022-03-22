@@ -1,6 +1,13 @@
 import { Card } from "antd"
 import ResultField from "./ResultField"
 import { orange, green, gold } from "@ant-design/colors"
+import { useRecoilValue } from "recoil"
+
+import {
+  darkThemeSecondaryState,
+  lightThemeSecondaryState,
+  themeState,
+} from "../../Components/States/Colors"
 
 type ResultCardProps = {
   title: string
@@ -10,13 +17,20 @@ type ResultCardProps = {
 }
 
 function ResultCard({ title, temp, airHumid, soilHumid }: ResultCardProps) {
+  const theme = useRecoilValue(themeState)
+  const darkSecondary = useRecoilValue(darkThemeSecondaryState)
+  const lightSecondary = useRecoilValue(lightThemeSecondaryState)
   return (
     <Card
-      title={title}
       bordered={false}
       style={{
         height: "100%",
-        boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+        boxShadow:
+          theme === "dark" ? "" : "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        backgroundColor: theme === "dark" ? darkSecondary : lightSecondary,
       }}
     >
       <ResultField
