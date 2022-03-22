@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 
 const app = express();
 const port = 5000;
-const urlDB = "localhost:27017";
+const urlDB = "mongodb-service.default.svc.cluster.local:27017";
 app.use(bodyParser.json())
 
 console.log("urlDB :: ", urlDB);
