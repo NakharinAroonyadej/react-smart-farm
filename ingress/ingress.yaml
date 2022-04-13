@@ -11,7 +11,7 @@ spec:
         path: /
         backend:
           service:
-            name: react-smart-farm
+            name: frontend-service
             port:
               number: 80
 ---
@@ -28,6 +28,6 @@ spec:
         path: /
         backend:
           service:
-            name: react-smart-farm-controller
+            name: backend-service
             port:
               number: 5000

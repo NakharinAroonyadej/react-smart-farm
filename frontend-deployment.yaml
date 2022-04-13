@@ -1,23 +1,23 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: react-smart-farm
+  name: frontend-deployment
   labels:
-    app: react-smart-farm
+    app: frontend-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: react-smart-farm
+      app: frontend-deployment
     
   template:
     metadata:
       labels:
-        app: react-smart-farm
+        app: frontend-deployment
     spec:
       containers:
-      - image: react-smart-farm:v1
-        name: react-smart-farm
+      - image: react-smart-farm-frontend:v1
+        name: frontend-deployment
         ports:
         - containerPort: 80
           name: http-server
@@ -25,12 +25,11 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name:  react-smart-farm
+  name:  frontend-service
 spec:
-  # type: LoadBalancer
   ports:
     - port: 80
       targetPort: 80
       protocol: TCP
   selector:
-    app: react-smart-farm
+    app: frontend-deployment
