@@ -6,9 +6,15 @@ var cors = require('cors');
 
 const app = express();
 const port = 5000;
-const urlDB = "mongodb-service.default.svc.cluster.local:27017";
+const environment = "docker" // docker | localhost
+const urlDB = environment == "docker" ? "mongodb-service.default.svc.cluster.local:27017" : "localhost:27017";
 app.use(bodyParser.json())
-app.use(cors());
+const corsOptions ={
+  origin:'*', 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200,
+}
+app.use(cors(corsOptions));
 
 console.log("urlDB :: ", urlDB);
 

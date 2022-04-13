@@ -27,7 +27,7 @@ apiVersion: v1
 metadata:
   name:  react-smart-farm-controller
 spec:
-  type: LoadBalancer
+  # type: LoadBalancer
   ports:
     - port: 5000
       targetPort: 5000

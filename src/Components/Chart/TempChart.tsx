@@ -60,6 +60,7 @@ function TempChart() {
 
   const options = {
     responsive: true,
+    // bezierCurve: true,
     layout: {
       padding: 24,
     },
