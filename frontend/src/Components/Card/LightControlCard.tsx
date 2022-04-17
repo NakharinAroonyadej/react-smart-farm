@@ -15,9 +15,15 @@ type LightControlCardProps = {
   active: boolean
   title: string
   width: number
+  onClick: () => void
 }
 
-function LightControlCard({ active, title, width }: LightControlCardProps) {
+function LightControlCard({
+  active,
+  title,
+  width,
+  onClick,
+}: LightControlCardProps) {
   const [loading, setLoading] = useState<boolean>(false)
   const [isActive, setIsActive] = useState<boolean>(false)
   const [spin, setSpin] = useState<boolean>(false)
@@ -57,6 +63,7 @@ function LightControlCard({ active, title, width }: LightControlCardProps) {
         justifyContent: width <= 768 ? "space-between" : "center",
         backgroundColor: theme === "dark" ? darkSecondary : lightSecondary,
       }}
+      onClick={onClick}
     >
       <div
         style={{

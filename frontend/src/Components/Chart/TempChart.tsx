@@ -49,6 +49,21 @@ export const data = {
       data: labels.map(() => Math.floor(Math.random() * 15) + 20),
       borderColor: "#7c3aed",
       backgroundColor: "rgba(124, 58, 237, 0.5)",
+      yAxisID: "y",
+    },
+    {
+      label: "ความชื้นอากาศ (%)",
+      data: labels.map(() => Math.floor(Math.random() * 20) + 70),
+      borderColor: "rgb(53, 162, 235)",
+      backgroundColor: "rgba(53, 162, 235, 0.5)",
+      yAxisID: "y1",
+    },
+    {
+      label: "ความชื้นดิน (%)",
+      data: labels.map(() => Math.floor(Math.random() * 20) + 70),
+      borderColor: "#16a34a",
+      backgroundColor: "rgba(22, 163, 74, 0.5)",
+      yAxisID: "y1",
     },
   ],
 }
@@ -66,6 +81,21 @@ function TempChart() {
     },
     scales: {
       y: {
+        ticks: {
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Lato",
+          },
+        },
+      },
+      y1: {
+        type: "linear" as const,
+        display: true,
+        position: "right" as const,
+        grid: {
+          drawOnChartArea: false,
+        },
         ticks: {
           color: theme === "dark" ? "white" : "black",
           font: {
@@ -99,7 +129,7 @@ function TempChart() {
       },
       title: {
         display: true,
-        text: "กราฟอุณหภูมิ",
+        text: "กราฟอุณหภูมิและความชื้น",
         font: {
           size: 24,
           family: "Kanit",
