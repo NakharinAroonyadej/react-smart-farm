@@ -1,4 +1,4 @@
-import { Layout, Breadcrumb, Form, Row } from "antd"
+import { Layout, Breadcrumb, Form, Modal, Input } from "antd"
 import "./App.css"
 import "antd/dist/antd.css"
 import { useEffect, useState } from "react"
@@ -18,7 +18,7 @@ import { PlusOutlined } from "@ant-design/icons"
 import axios from "axios"
 
 function App() {
-  const [form] = Form.useForm()
+  const [deviceForm] = Form.useForm()
 
   const [devices, setDevices] = useState<any[]>([])
   const [currentDevice, setCurrentDevice] = useState<any>(null)
@@ -29,9 +29,28 @@ function App() {
   const [darkSecondary] = useRecoilState(darkThemeSecondaryState)
   const [lightPrimary] = useRecoilState(lightThemePrimaryState)
   const [lightSecondary] = useRecoilState(lightThemeSecondaryState)
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
 
-  const onCreateDevice = async () => {
-    // const res = await axios.post
+  const all = async () => {
+    const res = await axios.get(
+      "http://react-smart-farm-controller.com/devices"
+    )
+    setDevices(res.data.data)
+  }
+
+  const onCreateDevice = async () => {}
+
+  const handleOk = async (value: any) => {
+    await axios.post("http://react-smart-farm-controller.com/devices", {
+      name: value.deviceName,
+    })
+    deviceForm.resetFields()
+    setIsModalVisible(false)
+  }
+
+  const handleCancel = () => {
+    deviceForm.resetFields()
+    setIsModalVisible(false)
   }
 
   useEffect(() => {
@@ -46,25 +65,7 @@ function App() {
       setWindowWidth(window.innerWidth)
     })
     all()
-  }, [])
-
-  const all = async () => {
-    // const data = await fetch("http://react-smart-farm-controller.com/").then(
-    //   (data) => data.text()
-    // )
-    const res = await axios.get(
-      "http://react-smart-farm-controller.com/devices"
-    )
-    setDevices(res.data.data)
-    // const mock = new Array(8760).fill(undefined)
-    // console.log("creating")
-    // await Promise.all(
-    //   mock.map(async (_, index) => {
-    //     await await axios.get("http://localhost:5000/values/mock")
-    //   })
-    // )
-    // console.log("done creating")
-  }
+  }, [handleOk])
 
   return (
     <Layout>
@@ -148,6 +149,45 @@ function App() {
                   </div>
                 )
               })}
+              <div
+                style={{
+                  width: 100,
+                  height: 100,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: 48,
+                  cursor: "pointer",
+                  backgroundColor:
+                    theme === "dark" ? darkSecondary : lightSecondary,
+                  color: theme === "dark" ? "white" : "black",
+                  marginRight: 16,
+                }}
+                onClick={(e) => setIsModalVisible(true)}
+              >
+                <PlusOutlined />
+              </div>
+              <Modal
+                title={`Create new device`}
+                visible={isModalVisible}
+                onOk={deviceForm.submit}
+                onCancel={handleCancel}
+              >
+                <Form
+                  form={deviceForm}
+                  onFinish={handleOk}
+                  name="RelaySetting"
+                  fields={[
+                    {
+                      name: ["deviceName"],
+                    },
+                  ]}
+                >
+                  <Form.Item name="deviceName">
+                    <Input addonBefore="Device name:" />
+                  </Form.Item>
+                </Form>
+              </Modal>
             </Content>
           )}
         </Layout>

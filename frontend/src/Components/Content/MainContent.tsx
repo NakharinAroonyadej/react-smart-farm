@@ -58,6 +58,12 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
       id: currRelay?.id || "",
     }
 
+    device.relays.forEach((relay: any) => {
+      if (relay.id == currRelay?.id) {
+        relay.name = value.relayName
+      }
+    })
+
     await axios.patch(
       `http://react-smart-farm-controller.com/relays/${device.id}`,
       body,
@@ -156,6 +162,9 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
                         id: relay.id,
                         active: relay.active,
                       })
+                      settingForm.setFieldsValue({
+                        relayName: relay.name,
+                      })
                       setIsModalVisible(true)
                     }}
                   />
@@ -206,17 +215,7 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
         onOk={settingForm.submit}
         onCancel={handleCancel}
       >
-        <Form
-          form={settingForm}
-          onFinish={handleOk}
-          name="RelaySetting"
-          fields={[
-            {
-              name: ["relayName"],
-              value: currRelay?.name,
-            },
-          ]}
-        >
+        <Form form={settingForm} onFinish={handleOk} name="RelaySetting">
           <Form.Item name="relayName">
             <Input addonBefore="Relay name:" />
           </Form.Item>
