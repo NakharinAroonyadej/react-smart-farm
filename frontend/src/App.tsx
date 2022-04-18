@@ -1,70 +1,71 @@
-import { Layout, Breadcrumb, Form, Modal, Input } from "antd";
-import "./App.css";
-import "antd/dist/antd.css";
-import { useEffect, useState } from "react";
-import Navigation from "./Components/Navigation/Navigation";
-import { useRecoilState } from "recoil";
+import { Layout, Breadcrumb, Form, Modal, Input } from "antd"
+import "./App.css"
+import "antd/dist/antd.css"
+import { useEffect, useState } from "react"
+import Navigation from "./Components/Navigation/Navigation"
+import { useRecoilState } from "recoil"
 import {
   darkThemePrimaryState,
   darkThemeSecondaryState,
   lightThemePrimaryState,
   lightThemeSecondaryState,
   themeState,
-} from "./Components/States/Colors";
-import Sidebar from "./Components/Sidebar/Sidebar";
-import MainContent from "./Components/Content/MainContent";
-import { Content } from "antd/lib/layout/layout";
-import { PlusOutlined } from "@ant-design/icons";
-import axios from "axios";
+} from "./Components/States/Colors"
+import Sidebar from "./Components/Sidebar/Sidebar"
+import MainContent from "./Components/Content/MainContent"
+import { Content } from "antd/lib/layout/layout"
+import { PlusOutlined } from "@ant-design/icons"
+import axios from "axios"
 
 function App() {
-  const [deviceForm] = Form.useForm();
+  const [deviceForm] = Form.useForm()
 
-  const [devices, setDevices] = useState<any[]>([]);
-  const [currentDevice, setCurrentDevice] = useState<any>(null);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [windowWidth, setWindowWidth] = useState<number>(0);
-  const [theme, setTheme] = useRecoilState(themeState);
-  const [darkPrimary] = useRecoilState(darkThemePrimaryState);
-  const [darkSecondary] = useRecoilState(darkThemeSecondaryState);
-  const [lightPrimary] = useRecoilState(lightThemePrimaryState);
-  const [lightSecondary] = useRecoilState(lightThemeSecondaryState);
-  const [isModalVisible,setIsModalVisible] = useState<boolean>(false);
+  const [devices, setDevices] = useState<any[]>([])
+  const [currentDevice, setCurrentDevice] = useState<any>(null)
+  const [showDetail, setShowDetail] = useState<boolean>(false)
+  const [windowWidth, setWindowWidth] = useState<number>(0)
+  const [theme, setTheme] = useRecoilState(themeState)
+  const [darkPrimary] = useRecoilState(darkThemePrimaryState)
+  const [darkSecondary] = useRecoilState(darkThemeSecondaryState)
+  const [lightPrimary] = useRecoilState(lightThemePrimaryState)
+  const [lightSecondary] = useRecoilState(lightThemeSecondaryState)
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
 
   const all = async () => {
     const res = await axios.get(
       "http://react-smart-farm-controller.com/devices"
-    );
-    setDevices(res.data.data);
-  };
+    )
+    setDevices(res.data.data)
+  }
 
-  const handleOk = async (value : any) => {
-    await axios.post("http://react-smart-farm-controller.com/devices",{
-      name: value.deviceName
+  const onCreateDevice = async () => {}
+
+  const handleOk = async (value: any) => {
+    await axios.post("http://react-smart-farm-controller.com/devices", {
+      name: value.deviceName,
     })
     deviceForm.resetFields()
     setIsModalVisible(false)
-  };
+  }
 
   const handleCancel = () => {
     deviceForm.resetFields()
     setIsModalVisible(false)
-  };
+  }
 
   useEffect(() => {
-    const userTheme = localStorage.getItem("react-smart-farm-theme");
-    if (userTheme) setTheme(userTheme);
+    const userTheme = localStorage.getItem("react-smart-farm-theme")
+    if (userTheme) setTheme(userTheme)
     else {
-      localStorage.setItem("react-smart-farm-theme", "dark");
+      localStorage.setItem("react-smart-farm-theme", "dark")
     }
-    setWindowWidth(window.innerWidth);
+    setWindowWidth(window.innerWidth)
 
     window.addEventListener("resize", () => {
-      setWindowWidth(window.innerWidth);
-    });
-    all();
-  }, [handleOk]);
-
+      setWindowWidth(window.innerWidth)
+    })
+    all()
+  }, [handleOk])
 
   return (
     <Layout>
@@ -104,6 +105,24 @@ function App() {
                 justifyContent: "start",
               }}
             >
+              <div
+                style={{
+                  width: 100,
+                  height: 100,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: 48,
+                  cursor: "pointer",
+                  backgroundColor:
+                    theme === "dark" ? darkSecondary : lightSecondary,
+                  color: theme === "dark" ? "white" : "black",
+                  marginRight: 16,
+                }}
+                onClick={onCreateDevice}
+              >
+                <PlusOutlined />
+              </div>
               {devices.map((device) => {
                 return (
                   <div
@@ -122,13 +141,13 @@ function App() {
                       marginRight: 16,
                     }}
                     onClick={() => {
-                      setCurrentDevice(device);
-                      setShowDetail(true);
+                      setCurrentDevice(device)
+                      setShowDetail(true)
                     }}
                   >
                     {device.name}
                   </div>
-                );
+                )
               })}
               <div
                 style={{
@@ -144,7 +163,7 @@ function App() {
                   color: theme === "dark" ? "white" : "black",
                   marginRight: 16,
                 }}
-                onClick={e => setIsModalVisible(true)}
+                onClick={(e) => setIsModalVisible(true)}
               >
                 <PlusOutlined />
               </div>
@@ -174,7 +193,7 @@ function App() {
         </Layout>
       </Layout>
     </Layout>
-  );
+  )
 }
 
-export default App;
+export default App

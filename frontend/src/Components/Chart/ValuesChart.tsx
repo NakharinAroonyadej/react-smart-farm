@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js"
+import { useEffect, useState } from "react"
 import { Line } from "react-chartjs-2"
 import { useRecoilValue } from "recoil"
 import {
@@ -26,7 +27,20 @@ ChartJS.register(
   Legend
 )
 
-const labels = [
+const hoursFormat = new Array(24).fill(undefined).map((_, index) => {
+  const ts = Math.round(new Date().getTime() / 1000)
+  const target = ts - 1 * index * 3600
+  const hour = new Date(target * 1000).getHours()
+  return hour === 0 ? "24:00" : `${String(hour).padStart(2, "0")}:00`
+})
+
+const daysFormat = new Array(30).fill(undefined).map((_, index) => {
+  const ts = Math.round(new Date().getTime() / 1000)
+  const target = ts - 24 * index * 3600
+  return String(new Date(target * 1000).getDate())
+})
+
+const months = [
   "ม.ก.",
   "ก.พ.",
   "มี.ค.",
@@ -41,38 +55,21 @@ const labels = [
   "ธ.ค.",
 ]
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "อุณหภูมิ (°C)",
-      data: labels.map(() => Math.floor(Math.random() * 15) + 20),
-      borderColor: "#7c3aed",
-      backgroundColor: "rgba(124, 58, 237, 0.5)",
-      yAxisID: "y",
-    },
-    {
-      label: "ความชื้นอากาศ (%)",
-      data: labels.map(() => Math.floor(Math.random() * 20) + 70),
-      borderColor: "rgb(53, 162, 235)",
-      backgroundColor: "rgba(53, 162, 235, 0.5)",
-      yAxisID: "y1",
-    },
-    {
-      label: "ความชื้นดิน (%)",
-      data: labels.map(() => Math.floor(Math.random() * 20) + 70),
-      borderColor: "#16a34a",
-      backgroundColor: "rgba(22, 163, 74, 0.5)",
-      yAxisID: "y1",
-    },
-  ],
+const monthsFormat = new Array(12).fill(undefined).map((_, index) => {
+  const currentMonth = new Date().getMonth()
+  return months[(currentMonth - (index % 12) + 12) % 12]
+})
+
+type ValuesChartProps = {
+  values: any[]
+  selectedMode: number
 }
 
-function TempChart() {
+function ValuesChart({ values, selectedMode }: ValuesChartProps) {
+  // 0 - hours, 1 - days, 2 months
   const theme = useRecoilValue(themeState)
   const darkSecondary = useRecoilValue(darkThemeSecondaryState)
   const lightSecondary = useRecoilValue(lightThemeSecondaryState)
-
   const options = {
     responsive: true,
     // bezierCurve: true,
@@ -139,6 +136,38 @@ function TempChart() {
     },
   }
 
+  const data = {
+    labels:
+      selectedMode === 0
+        ? hoursFormat.reverse()
+        : selectedMode === 1
+        ? daysFormat.reverse()
+        : monthsFormat.reverse(),
+    datasets: [
+      {
+        label: "อุณหภูมิ (°C)",
+        data: values ? values.map((value) => value.temp) : [],
+        borderColor: "#7c3aed",
+        backgroundColor: "rgba(124, 58, 237, 0.5)",
+        yAxisID: "y",
+      },
+      {
+        label: "ความชื้นอากาศ (%)",
+        data: values ? values.map((value) => value.airHumid) : [],
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        yAxisID: "y1",
+      },
+      {
+        label: "ความชื้นดิน (%)",
+        data: values ? values.map((value) => value.soilHumid) : [],
+        borderColor: "#16a34a",
+        backgroundColor: "rgba(22, 163, 74, 0.5)",
+        yAxisID: "y1",
+      },
+    ],
+  }
+
   return (
     <div
       style={{
@@ -153,4 +182,4 @@ function TempChart() {
   )
 }
 
-export default TempChart
+export default ValuesChart
