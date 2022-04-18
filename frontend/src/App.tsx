@@ -30,6 +30,10 @@ function App() {
   const [lightPrimary] = useRecoilState(lightThemePrimaryState)
   const [lightSecondary] = useRecoilState(lightThemeSecondaryState)
 
+  const onCreateDevice = async () => {
+    // const res = await axios.post
+  }
+
   useEffect(() => {
     const userTheme = localStorage.getItem("react-smart-farm-theme")
     if (userTheme) setTheme(userTheme)
@@ -48,8 +52,18 @@ function App() {
     // const data = await fetch("http://react-smart-farm-controller.com/").then(
     //   (data) => data.text()
     // )
-    const res = await axios.get("http://react-smart-farm-controller.com/devices")
+    const res = await axios.get(
+      "http://react-smart-farm-controller.com/devices"
+    )
     setDevices(res.data.data)
+    // const mock = new Array(8760).fill(undefined)
+    // console.log("creating")
+    // await Promise.all(
+    //   mock.map(async (_, index) => {
+    //     await await axios.get("http://localhost:5000/values/mock")
+    //   })
+    // )
+    // console.log("done creating")
   }
 
   return (
@@ -104,6 +118,7 @@ function App() {
                   color: theme === "dark" ? "white" : "black",
                   marginRight: 16,
                 }}
+                onClick={onCreateDevice}
               >
                 <PlusOutlined />
               </div>
