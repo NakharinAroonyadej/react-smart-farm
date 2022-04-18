@@ -1,4 +1,4 @@
-import { Col, Layout, Modal, Row, Input, Form } from "antd";
+import { Col, Layout, Modal, Row, Input, Form, Button } from "antd";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import LightControlCard from "../Card/LightControlCard";
@@ -12,13 +12,6 @@ import {
 } from "../States/Colors";
 import axios from "axios";
 const { Content } = Layout;
-
-const mockupFields = {
-  timestamp: 0,
-  temp: 29.5,
-  airHumid: 97,
-  soilHumid: 78,
-};
 
 type MainContentProps = {
   windowWidth: number;
@@ -48,19 +41,21 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
     const body = {
       name: value.relayName,
       id: currRelay?.id || "",
-    }
-    
-    device.relays.forEach((relay:any) => {
+    };
+
+    device.relays.forEach((relay: any) => {
       if (relay.id == currRelay?.id) {
-        relay.name = value.relayName
+        relay.name = value.relayName;
       }
     });
 
     await axios.patch(
-      `http://react-smart-farm-controller.com/relays/${device.id}`,body,{
+      `http://react-smart-farm-controller.com/relays/${device.id}`,
+      body,
+      {
         headers: {
-          "Content-Type" : "application/json"
-        } 
+          "Content-Type": "application/json",
+        },
       }
     );
     setIsModalVisible(false);
@@ -70,14 +65,26 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
     setIsModalVisible(false);
   };
 
+  const onDelete = async () => {
+    if (window.confirm("Are you sure to delete this device?")) {
+      await axios.delete(`http://react-smart-farm-controller.com/devices/${device.id}`)
+    }
+    onBack()
+  };
+
   useEffect(() => {
     (async () => {
-      const farmEnviValues = (await axios.get(`http://react-smart-farm-controller.com/values/${device.id}`)).data.data
-      const latestValue = farmEnviValues.values[farmEnviValues.values.length-1]
+      const farmEnviValues = (
+        await axios.get(
+          `http://react-smart-farm-controller.com/values/${device.id}`
+        )
+      ).data.data;
+      const latestValue =
+        farmEnviValues.values[farmEnviValues.values.length - 1];
       setTemp(latestValue.temp);
       setAirHumid(latestValue.airHumid);
       setSoilHumid(latestValue.soilHumid);
-    })()
+    })();
   }, []);
 
   return (
@@ -104,6 +111,14 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
           onClick={onBack}
         />
         <span>{device.name}</span>
+        <Button
+          type="primary"
+          danger
+          style={{ marginLeft: "auto", cursor: "pointer" }}
+          onClick={onDelete}
+        >
+          Delete
+        </Button>
       </div>
       <Row gutter={{ xs: 8, sm: 16, md: 20 }}>
         <Col className="gutter-row" span={windowWidth <= 768 ? 24 : 10}>
@@ -132,8 +147,8 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
                         active: relay.active,
                       });
                       settingForm.setFieldsValue({
-                        relayName: relay.name
-                      })
+                        relayName: relay.name,
+                      });
                       setIsModalVisible(true);
                     }}
                   />
@@ -160,13 +175,9 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
         onOk={settingForm.submit}
         onCancel={handleCancel}
       >
-        <Form
-          form={settingForm}
-          onFinish={handleOk}
-          name="RelaySetting"
-        >
+        <Form form={settingForm} onFinish={handleOk} name="RelaySetting">
           <Form.Item name="relayName">
-            <Input addonBefore="Relay name:"/>
+            <Input addonBefore="Relay name:" />
           </Form.Item>
         </Form>
       </Modal>
