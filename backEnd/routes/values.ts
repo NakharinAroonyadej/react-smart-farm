@@ -2,7 +2,34 @@ const express = require("express")
 const app = express()
 import { Request, Response } from "express"
 const Device = require("../models/device")
-import { uuid } from "uuidv4"
+
+app.get("/mock",async (_:Request, res:Response) => {
+  let devices = await Device.find({})
+  devices.forEach(async (device:any) => {
+    const newVal = {
+      timestamp: +new Date(),
+      temp: getRandomFloat(25,40,1),
+      airHumid: getRandomFloat(40,90,1),
+      soilHumid: getRandomFloat(45,90,1),
+    }
+    device.values.push(newVal)
+    await device.save()
+  });
+  return res.status(200).json({ code: 200, message: "generate new data.", data: devices })
+})
+
+app.get("/:id",async (req:Request, res:Response) => {
+  const device = await Device.findOne({ id: req.params.id })
+  device.values.sort((a:any,b:any) => a.timestamp - b.timestamp)
+  return res.status(200).json({ code: 200, message: "generate new data.", data: device })
+})
+
+app.get("/:id/:amount",async (req:Request, res:Response) => {
+  const device = await Device.findOne({ id: req.params.id })
+  device.values.sort((a:any,b:any) => a.timestamp - b.timestamp)
+  device.values = device.values.slice(-1-parseInt(req.params.amount),-1)
+  return res.status(200).json({ code: 200, message: "generate new data.", data: device })
+})
 
 app.post("/:id", async (req: Request, res: Response) => {
   const { temp, airHumid, soilHumid } = req.body
@@ -15,7 +42,7 @@ app.post("/:id", async (req: Request, res: Response) => {
   if (!device)
     return res.status(404).json({ code: 404, message: "Device not found." })
   const newVal = {
-    id: uuid(),
+    timestamp: +new Date(),
     temp,
     airHumid,
     soilHumid,
@@ -41,5 +68,10 @@ app.patch("/:id", async (req: Request, res: Response) => {
   await device.save()
   res.status(200).json({ code: 200, message: "Device upated.", data: device })
 })
+
+function getRandomFloat(min:number, max:number, decimals:number) {
+  const str = (Math.random() * (max - min) + min).toFixed(decimals);
+  return parseFloat(str);
+}
 
 module.exports = app

@@ -1,57 +1,78 @@
-import { Col, Layout, Modal, Row } from "antd"
-import { useEffect, useRef, useState } from "react"
-import { useRecoilValue } from "recoil"
-import LightControlCard from "../Card/LightControlCard"
-import ResultCard from "../Card/ResultCard"
-import HumidChart from "../Chart/HumidChart"
-import TempChart from "../Chart/TempChart"
-import { LeftOutlined } from "@ant-design/icons"
+import { Col, Layout, Modal, Row, Input, Form } from "antd";
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
+import LightControlCard from "../Card/LightControlCard";
+import ResultCard from "../Card/ResultCard";
+import TempChart from "../Chart/TempChart";
+import { LeftOutlined } from "@ant-design/icons";
 import {
   darkThemePrimaryState,
   lightThemePrimaryState,
   themeState,
-} from "../States/Colors"
-const { Content } = Layout
+} from "../States/Colors";
+import axios from "axios";
+const { Content } = Layout;
 
 const mockupFields = {
   timestamp: 0,
   temp: 29.5,
   airHumid: 97,
   soilHumid: 78,
-}
+};
 
 type MainContentProps = {
-  windowWidth: number
-  device: any
-  onBack: () => void
-}
+  windowWidth: number;
+  device: any;
+  onBack: () => void;
+};
+
+type currRelayProps = {
+  name: string;
+  id: string;
+  active: boolean;
+};
 
 function MainContent({ windowWidth, device, onBack }: MainContentProps) {
-  const theme = useRecoilValue(themeState)
-  const darkPrimary = useRecoilValue(darkThemePrimaryState)
-  const lightPrimary = useRecoilValue(lightThemePrimaryState)
+  const theme = useRecoilValue(themeState);
+  const darkPrimary = useRecoilValue(darkThemePrimaryState);
+  const lightPrimary = useRecoilValue(lightThemePrimaryState);
 
-  const [timestamp, setTimestamp] = useState<number>(0)
-  const [temp, setTemp] = useState<number>(0)
-  const [airHumid, setAirHumid] = useState<number>(0)
-  const [soilHumid, setSoilHumid] = useState<number>(0)
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
+  const [temp, setTemp] = useState<number>(0);
+  const [airHumid, setAirHumid] = useState<number>(0);
+  const [soilHumid, setSoilHumid] = useState<number>(0);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [currRelay, setCurrRelay] = useState<currRelayProps>();
+  const [settingForm] = Form.useForm();
 
-  const [firstRelay, setFirstRelay] = useState<boolean>(true)
-  const [secondRelay, setSecondRelay] = useState<boolean>(true)
-  const [thirdRelay, setThirdRelay] = useState<boolean>(true)
-  const [fourthRelay, setFourthRelay] = useState<boolean>(false)
+  const handleOk = async (value: any) => {
+    const body = {
+      name: value.relayName,
+      id: currRelay?.id || "",
+    }
+    
+    await axios.patch(
+      `http://react-smart-farm-controller.com/relays/${device.id}`,body,{
+        headers: {
+          "Content-Type" : "application/json"
+        } 
+      }
+    );
+    setIsModalVisible(false);
+  };
 
-  const handleOk = () => {}
-
-  const handleCancel = () => {}
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   useEffect(() => {
-    setTimestamp(mockupFields.timestamp)
-    setTemp(mockupFields.temp)
-    setAirHumid(mockupFields.airHumid)
-    setSoilHumid(mockupFields.soilHumid)
-  }, [])
+    (async () => {
+      const farmEnviValues = (await axios.get(`http://react-smart-farm-controller.com/values/${device.id}`)).data.data
+      const latestValue = farmEnviValues.values[farmEnviValues.values.length-1]
+      setTemp(latestValue.temp);
+      setAirHumid(latestValue.airHumid);
+      setSoilHumid(latestValue.soilHumid);
+    })()
+  }, []);
 
   return (
     <Content
@@ -96,10 +117,19 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
                     width={windowWidth}
                     active={relay.active}
                     title={relay.name}
-                    onClick={() => setIsModalVisible(true)}
+                    device={device.id}
+                    id={relay.id}
+                    onClick={() => {
+                      setCurrRelay({
+                        name: relay.name,
+                        id: relay.id,
+                        active: relay.active,
+                      });
+                      setIsModalVisible(true);
+                    }}
                   />
                 </Col>
-              )
+              );
             })}
           </Row>
         </Col>
@@ -116,17 +146,29 @@ function MainContent({ windowWidth, device, onBack }: MainContentProps) {
         </Col> */}
       </Row>
       <Modal
-        title="Basic Modal"
+        title={`Setting of ${currRelay?.name}`}
         visible={isModalVisible}
-        onOk={handleOk}
+        onOk={settingForm.submit}
         onCancel={handleCancel}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Form
+          form={settingForm}
+          onFinish={handleOk}
+          name="RelaySetting"
+          fields={[
+            {
+              name: ["relayName"],
+              value: currRelay?.name,
+            },
+          ]}
+        >
+          <Form.Item name="relayName">
+            <Input addonBefore="Relay name:" />
+          </Form.Item>
+        </Form>
       </Modal>
     </Content>
-  )
+  );
 }
 
-export default MainContent
+export default MainContent;

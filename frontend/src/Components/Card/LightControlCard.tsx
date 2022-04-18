@@ -1,56 +1,78 @@
-import { Card } from "antd"
-import { Switch } from "antd"
-import { gold } from "@ant-design/colors"
-import { useEffect, useState } from "react"
-import { useRecoilState } from "recoil"
+import { Card } from "antd";
+import { Switch } from "antd";
+import { gold } from "@ant-design/colors";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import {
   darkThemeSecondaryState,
   lightThemeSecondaryState,
   themeState,
-} from "../States/Colors"
-import { SettingOutlined } from "@ant-design/icons"
-import styled from "@emotion/styled"
+} from "../States/Colors";
+import { SettingOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 type LightControlCardProps = {
-  active: boolean
-  title: string
-  width: number
-  onClick: () => void
-}
+  active: boolean;
+  title: string;
+  width: number;
+  device: string;
+  id: string;
+  onClick: () => void;
+};
 
 function LightControlCard({
   active,
   title,
   width,
+  device,
+  id,
   onClick,
 }: LightControlCardProps) {
-  const [loading, setLoading] = useState<boolean>(false)
-  const [isActive, setIsActive] = useState<boolean>(false)
-  const [spin, setSpin] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const [spin, setSpin] = useState<boolean>(false);
 
-  const [theme] = useRecoilState(themeState)
-  const [darkSecondary] = useRecoilState(darkThemeSecondaryState)
-  const [lightSecondary] = useRecoilState(lightThemeSecondaryState)
+  const [theme] = useRecoilState(themeState);
+  const [darkSecondary] = useRecoilState(darkThemeSecondaryState);
+  const [lightSecondary] = useRecoilState(lightThemeSecondaryState);
 
   const onChange = () => {
-    setLoading(true)
+    setLoading(true);
     // Mockup.
     setTimeout(() => {
-      setLoading(false)
-      setIsActive(!isActive)
-    }, 2000)
+      setLoading(false);
+      patchActive();
+      setIsActive(!isActive);
+    }, 2000);
+  };
+
+  async function patchActive() {
+    const body = {
+      id,
+      active: !isActive,
+    };
+    await axios.patch(
+      `http://react-smart-farm-controller.com/relays/${device}`,
+      body,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
   const onSetting = () => {
-    setSpin(true)
+    setSpin(true);
     setTimeout(() => {
-      setSpin(false)
-    }, 150)
-  }
+      setSpin(false);
+    }, 150);
+    onClick();
+  };
 
   useEffect(() => {
-    setIsActive(active)
-  }, [])
+    setIsActive(active);
+  }, []);
 
   return (
     <Card
@@ -63,7 +85,7 @@ function LightControlCard({
         justifyContent: width <= 768 ? "space-between" : "center",
         backgroundColor: theme === "dark" ? darkSecondary : lightSecondary,
       }}
-      onClick={onClick}
+      // onClick={onClick}
     >
       <div
         style={{
@@ -111,7 +133,7 @@ function LightControlCard({
         onClick={onSetting}
       />
     </Card>
-  )
+  );
 }
 
-export default LightControlCard
+export default LightControlCard;

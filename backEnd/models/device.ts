@@ -7,7 +7,7 @@ const deviceSchema = new Schema({
   values: {
     type: [
       {
-        id: String,
+        timestamp: Number,
         temp: Number,
         airHumid: Number,
         soilHumid: Number,
