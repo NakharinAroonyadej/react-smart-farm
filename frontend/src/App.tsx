@@ -48,7 +48,7 @@ function App() {
     // const data = await fetch("http://react-smart-farm-controller.com/").then(
     //   (data) => data.text()
     // )
-    const res = await axios.get("http://localhost:8080/devices")
+    const res = await axios.get("http://react-smart-farm-controller.com/devices")
     setDevices(res.data.data)
   }
 
