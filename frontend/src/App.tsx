@@ -105,24 +105,6 @@ function App() {
                 justifyContent: "start",
               }}
             >
-              <div
-                style={{
-                  width: 100,
-                  height: 100,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: 48,
-                  cursor: "pointer",
-                  backgroundColor:
-                    theme === "dark" ? darkSecondary : lightSecondary,
-                  color: theme === "dark" ? "white" : "black",
-                  marginRight: 16,
-                }}
-                onClick={onCreateDevice}
-              >
-                <PlusOutlined />
-              </div>
               {devices.map((device) => {
                 return (
                   <div
