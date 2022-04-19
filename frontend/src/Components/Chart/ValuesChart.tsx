@@ -7,15 +7,14 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js"
-import { useEffect, useState } from "react"
-import { Line } from "react-chartjs-2"
-import { useRecoilValue } from "recoil"
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { useRecoilValue } from "recoil";
 import {
   darkThemeSecondaryState,
   lightThemeSecondaryState,
   themeState,
-} from "../States/Colors"
+} from "../States/Colors";
 
 ChartJS.register(
   CategoryScale,
@@ -25,20 +24,20 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
-)
+);
 
 const hoursFormat = new Array(24).fill(undefined).map((_, index) => {
-  const ts = Math.round(new Date().getTime() / 1000)
-  const target = ts - 1 * index * 3600
-  const hour = new Date(target * 1000).getHours()
-  return hour === 0 ? "24:00" : `${String(hour).padStart(2, "0")}:00`
-})
+  const ts = Math.round(new Date().getTime() / 1000);
+  const target = ts - 1 * index * 3600;
+  const hour = new Date(target * 1000).getHours();
+  return hour === 0 ? "24:00" : `${String(hour).padStart(2, "0")}:00`;
+});
 
 const daysFormat = new Array(30).fill(undefined).map((_, index) => {
-  const ts = Math.round(new Date().getTime() / 1000)
-  const target = ts - 24 * index * 3600
-  return String(new Date(target * 1000).getDate())
-})
+  const ts = Math.round(new Date().getTime() / 1000);
+  const target = ts - 24 * index * 3600;
+  return String(new Date(target * 1000).getDate());
+});
 
 const months = [
   "ม.ก.",
@@ -53,23 +52,23 @@ const months = [
   "ก.ย.",
   "พ.ย.",
   "ธ.ค.",
-]
+];
 
 const monthsFormat = new Array(12).fill(undefined).map((_, index) => {
-  const currentMonth = new Date().getMonth()
-  return months[(currentMonth - (index % 12) + 12) % 12]
-})
+  const currentMonth = new Date().getMonth();
+  return months[(currentMonth - (index % 12) + 12) % 12];
+});
 
 type ValuesChartProps = {
-  values: any[]
-  selectedMode: number
-}
+  values: any[];
+  selectedMode: number;
+};
 
 function ValuesChart({ values, selectedMode }: ValuesChartProps) {
   // 0 - hours, 1 - days, 2 months
-  const theme = useRecoilValue(themeState)
-  const darkSecondary = useRecoilValue(darkThemeSecondaryState)
-  const lightSecondary = useRecoilValue(lightThemeSecondaryState)
+  const theme = useRecoilValue(themeState);
+  const darkSecondary = useRecoilValue(darkThemeSecondaryState);
+  const lightSecondary = useRecoilValue(lightThemeSecondaryState);
   const options = {
     responsive: true,
     // bezierCurve: true,
@@ -79,6 +78,15 @@ function ValuesChart({ values, selectedMode }: ValuesChartProps) {
     scales: {
       y: {
         ticks: {
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Lato",
+          },
+        },
+        title:{
+          display:true,
+          text: "อุณหภูมิ (°C)",
           color: theme === "dark" ? "white" : "black",
           font: {
             size: 16,
@@ -100,6 +108,15 @@ function ValuesChart({ values, selectedMode }: ValuesChartProps) {
             family: "Lato",
           },
         },
+        title:{
+          display:true,
+          text: "ความชื้น (%)",
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Lato",
+          },
+        },
       },
       x: {
         ticks: {
@@ -107,6 +124,15 @@ function ValuesChart({ values, selectedMode }: ValuesChartProps) {
           font: {
             size: 16,
             family: "Kanit",
+          },
+        },
+        title:{
+          display:true,
+          text: "เวลา",
+          color: theme === "dark" ? "white" : "black",
+          font: {
+            size: 16,
+            family: "Lato",
           },
         },
       },
@@ -134,15 +160,15 @@ function ValuesChart({ values, selectedMode }: ValuesChartProps) {
         color: theme === "dark" ? "white" : "black",
       },
     },
-  }
+  };
 
   const data = {
     labels:
       selectedMode === 0
-        ? hoursFormat.reverse()
+        ? [...hoursFormat].reverse()
         : selectedMode === 1
-        ? daysFormat.reverse()
-        : monthsFormat.reverse(),
+        ? [...daysFormat].reverse()
+        : [...monthsFormat].reverse(),
     datasets: [
       {
         label: "อุณหภูมิ (°C)",
@@ -166,7 +192,7 @@ function ValuesChart({ values, selectedMode }: ValuesChartProps) {
         yAxisID: "y1",
       },
     ],
-  }
+  };
 
   return (
     <div
@@ -179,7 +205,7 @@ function ValuesChart({ values, selectedMode }: ValuesChartProps) {
     >
       <Line options={options} data={data} />
     </div>
-  )
+  );
 }
 
-export default ValuesChart
+export default ValuesChart;

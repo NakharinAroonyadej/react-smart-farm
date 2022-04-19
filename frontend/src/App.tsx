@@ -38,12 +38,11 @@ function App() {
     setDevices(res.data.data)
   }
 
-  const onCreateDevice = async () => {}
-
   const handleOk = async (value: any) => {
     await axios.post("http://react-smart-farm-controller.com/devices", {
       name: value.deviceName,
     })
+    setDevices([...devices])
     deviceForm.resetFields()
     setIsModalVisible(false)
   }
@@ -65,7 +64,7 @@ function App() {
       setWindowWidth(window.innerWidth)
     })
     all()
-  }, [handleOk])
+  }, [])
 
   return (
     <Layout>
